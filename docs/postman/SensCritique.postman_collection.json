@@ -1,0 +1,317 @@
+{
+	"info": {
+		"_postman_id": "31568f68-f82d-47a5-b7d9-7bb3d166f1a6",
+		"name": "SensCritique",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get user info",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Me($avatarSize: String) {\n    me {    \n        id\n        medias(avatarSize: $avatarSize) {\n            avatar\n            __typename\n        }\n        name\n        __typename\n    }\n}",
+						"variables": "{\n    \"avatarSize\": \"70x70\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get product details",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "fragment UserInfosFragment on Product {\n  userInfos {\n    isListed\n    isReviewed\n    __typename\n  }\n  __typename\n}\n\nquery Product($avatarSize: String, $backdropSize: String, $id: Int!, $limitCasting: Int!, $pictureSize: String, $rating: Int, $userId: Int!) {\n  product(id: $id) {\n    id\n    casting {\n      contact {\n        id\n        picture\n        productCount\n        name\n        __typename\n      }\n      profession\n      role\n      __typename\n    }\n    date_done\n    genres\n    id\n    universe\n    medias(pictureSize: $pictureSize, backdropSize: $backdropSize) {\n      backdrop\n      picture\n      video {\n        id\n        provider\n        __typename\n      }\n      __typename\n    }\n    myWish\n    original_title\n    rating\n    release_date\n    synopsis\n    scouts_average {\n      average\n      count\n      __typename\n    }\n    scoutsRatings {\n      rating\n      user {\n        id\n        medias(avatarSize: $avatarSize) {\n          avatar\n          __typename\n        }\n        name\n        url\n        __typename\n      }\n      __typename\n    }\n    stats {\n      rating_count\n      review_count\n      wish_count\n      __typename\n    }\n    statsDetails {\n      split {\n        rating0\n        rating1\n        rating2\n        rating3\n        rating4\n        rating5\n        rating6\n        rating7\n        rating8\n        rating9\n        __typename\n      }\n      __typename\n    }\n    usersByRating(rating: $rating) {\n      id\n      name\n      medias {\n        avatar\n        __typename\n      }\n      usertag\n      __typename\n    }\n    channel\n    numberOfSeasons\n    productionStatus\n    seasons {\n      id\n      title\n      rating\n      seasonNumber\n      numberOfEpisodes\n      __typename\n    }\n    albums {\n      id\n      title\n      rating\n      stats {\n        wish_count\n        __typename\n      }\n      medias {\n        picture\n        __typename\n      }\n      __typename\n    }\n    episodes {\n      id\n      title\n      rating\n      release_date\n      year_of_production\n      universe\n      __typename\n    }\n    parentTvShow {\n      id\n      medias(backdropSize: $backdropSize) {\n        backdrop\n        __typename\n      }\n      __typename\n    }\n    title\n    duration\n    albumCount\n    tracklistExtract {\n      id\n      duration\n      title\n      casting {\n        contact {\n          id\n          name\n          __typename\n        }\n        profession\n        __typename\n      }\n      __typename\n    }\n    ...UserInfosFragment\n    polls(limit: 5) {\n      id\n      label\n      products(limit: 12) {\n        id\n        casting(limit: $limitCasting) {\n          contact {\n            name\n            __typename\n          }\n          __typename\n        }\n        rating\n        title\n        medias(pictureSize: $pictureSize) {\n          picture\n          __typename\n        }\n        myRating\n        myWish\n        universe\n        __typename\n      }\n      __typename\n    }\n    myRating\n    myWish\n    userRating(userId: $userId)\n    year_of_production\n    hasReviewsVersus\n    __typename\n  }\n}",
+						"variables": "{\n        \"id\": 33666411,\n        \"avatarSize\": \"30x30\",\n        \"backdropSize\": \"400\",\n        \"limitCasting\": 1,\n        \"pictureSize\": \"160\",\n        \"rating\": 7,\n        \"userId\": 1853858\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rate product",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation ProductRate($rating: Int!, $productId: Int!) {\n    productRate(rating: $rating, productId: $productId)\n}",
+						"variables": "{\n    \"productId\": 462336,\n    \"rating\": 5\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List ratings",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query UserRatings($id: Int!, $universe: String, $sortBy: String, $limit: Int, $offset: Int, $avatarSize: String, $pictureSize: String) {\n    user(id: $id) {\n        medias(avatarSize: $avatarSize) {\n        avatar\n        __typename\n        }\n        id\n        ratings(universe: $universe, sortBy: $sortBy, limit: $limit, offset: $offset) {\n        id\n        genres\n        medias(pictureSize: $pictureSize) {\n            picture\n            __typename\n        }\n        year_of_production\n        release_date\n        title\n        universe\n        rating\n        myRating\n        myWish\n        targetRating\n        __typename\n        }\n        __typename\n    }\n}",
+						"variables": "{\n    \"avatarSize\":\"30x30\",\"id\":1853858,\n    \"limit\":30,\n    \"offset\":1,\n    \"pictureSize\":\"150\",\n    \"sortBy\":\"user_last_action\",\n    \"universe\":\"\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List UserLIsts",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query UserLists($id: Int!, $pictureSize: String) {\n  user(id: $id) {\n    id\n    name\n    lists(limit: 5) {\n      id\n      commentCount\n      dateLastEdit\n      label\n      likePositiveCount\n      productCount\n      products(limit: 8) {\n        product {\n          id\n          rating\n          title\n          medias(pictureSize: $pictureSize) {\n            picture\n            __typename\n          }\n          myWish\n          myRating\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n",
+						"variables": "{\n    \"id\": 1853858,\n    \"pictureSize\": \"150\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create UserList and add product",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation userListCreate($title: String!, $universe: String!, $productId: Int) {\n  userListCreate(title: $title, universe: $universe, productId: $productId) {\n    id\n    label\n    universe\n    __typename\n  }\n}",
+						"variables": "{\n    \"title\": \"TestCreate\",\n    \"universe\": \"movie\",\n    \"productId\": 33666411\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add product to UserList",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation userListAddProduct($listId: Int!, $productId: Int!) {\n  userListAddProduct(listId: $listId, productId: $productId) {\n    id\n    __typename\n  }\n}",
+						"variables": "{\n    \"listId\": 2995233,\n    \"productId\": 39762875\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List items in UserList",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query UserList($avatarSize: String, $id: Int!, $limit: Int, $offset: Int, $pictureSize: String) {\n  userList(id: $id) {\n    author {\n      medias(avatarSize: $avatarSize) {\n        avatar\n        __typename\n      }\n      following\n      id\n      name\n      __typename\n    }\n    commentCount\n    cover\n    dateLastEdit\n    description\n    id\n    isDisliked\n    isLiked\n    isOfficial\n    products(limit: $limit, offset: $offset) {\n      ...ListProduct\n      annotation\n      __typename\n    }\n    label\n    likeNegativeCount\n    likePositiveCount\n    likers {\n      id\n      name\n      medias(avatarSize: $avatarSize) {\n        avatar\n        __typename\n      }\n      __typename\n    }\n    productCount\n    universe\n    __typename\n  }\n}\n\nfragment ListProduct on ListItem {\n  product {\n    id\n    genres\n    medias(pictureSize: $pictureSize) {\n      picture\n      __typename\n    }\n    year_of_production\n    title\n    universe\n    myRating\n    myWish\n    __typename\n  }\n  annotation\n  __typename\n}",
+						"variables": "{\n    \"avatarSize\": \"40x40\",\n    \"id\": 2995233,\n    \"limit\": 100,\n    \"offset\": 0,\n    \"pictureSize\": \"75\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List comments in UserList",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query UserlistComments($id: Int!, $limit: Int, $offset: Int, $avatarSize: String) {\n  userList(id: $id) {\n    id\n    commentCount\n    comments(limit: $limit, offset: $offset, sortBy: DATE_DESC) {\n      ...Comment\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment Comment on Comment {\n  author {\n    id\n    medias(avatarSize: $avatarSize) {\n      avatar\n      __typename\n    }\n    name\n    __typename\n  }\n  content\n  dateCreation\n  id\n  __typename\n}",
+						"variables": "{\n    \"limit\": 3,\n    \"offset\": 0,\n    \"id\": 2995233,\n    \"avatarSize\": \"40x40\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query SearchQuery($keywords: String!, $universe: String, $limit: Int, $pictureSize: String) {\n  searchResult(keywords: $keywords, universe: $universe, limit: $limit) {\n    results {\n      products_list {\n        id\n        title\n        genres\n        medias(pictureSize: $pictureSize) {\n          picture\n          __typename\n        }\n        release_date\n        universe\n        __typename\n      }\n      universe\n      __typename\n    }\n    __typename\n  }\n}",
+						"variables": "{\n    \"keywords\":\"Justice League\",\n    \"universe\":\"\",\n    \"limit\":50,\n    \"pictureSize\":\"50\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add to wish",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation ProductWish($productId: Int!) {\n    productWish(productId: $productId)\n}",
+						"variables": "{\n    \"productId\":17954661\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List wishes",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "\nquery UserWishes($avatarSize: String, $id: Int!, $universe: String, $sortBy: String, $limit: Int, $offset: Int, $pictureSize: String) {\n  user(id: $id) {\n    id\n    medias(avatarSize: $avatarSize) {\n      avatar\n      __typename\n    }\n    wishes(universe: $universe, sortBy: $sortBy, limit: $limit, offset: $offset) {\n      id\n      genres\n      medias(pictureSize: $pictureSize) {\n        picture\n        __typename\n      }\n      year_of_production\n      release_date\n      title\n      myRating\n      myWish\n      targetWish\n      universe\n      __typename\n    }\n    __typename\n  }\n}",
+						"variables": "{\n    \"avatarSize\":\"30x30\",\n    \"id\":1853858,\n    \"universe\":\"\",\n    \"sortBy\":\"user_last_action\",\n    \"limit\":30,\n    \"offset\":0,\n    \"pictureSize\":\"150\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove from wish",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation ProductUnwish($productId: Int!) {\n    productUnwish(productId: $productId)\n}\n    ",
+						"variables": "{\n    \"productId\":17954661\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{authorization}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "Authorization",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

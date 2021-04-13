@@ -1,0 +1,1001 @@
+directive @needAuthentification on QUERY | FIELD | FIELD_DEFINITION
+
+type AdminPopcornsConflictProduct {
+  providerId: Int!
+  providerLabel: String!
+  providerProductId: String!
+  botProviderProductId: String
+  state: Int!
+  botState: Int
+  scProductId: Int
+  botScProductId: Int
+  webUrls: [String]!
+}
+
+type AdminPopcornsCount {
+  conflictsCount: Int!
+  ignoredProductsCount: Int!
+  matchedProductsCount: Int!
+  unmatchedProductsCount: Int!
+}
+
+type AdminPopcornsMatchProductResponse {
+  duplicate: AdminPopcornsProduct
+}
+
+type AdminPopcornsProduct {
+  isIgnored: Int!
+  providerId: Int!
+  providerLabel: String!
+  providerProductId: String!
+  providerTitle: String
+  providerYear: Int
+  webUrls: [String!]
+}
+
+type Badge {
+  id: Int!
+  label: String
+  description: String
+  image: String
+  url: String
+}
+
+type CannesInfos {
+  dateProjection: String
+  inCompetition: Boolean
+}
+
+type CannesVideo {
+  dateCreation: String
+  fbId: String
+  year: Int
+  ytId: String
+  id: Int!
+  type: CannesVideoType
+}
+
+enum CannesVideoType {
+  INTERVIEW
+  PODCAST
+}
+
+type CastingPerson {
+  contact: Contact
+  profession: String
+  role: String
+}
+
+type CD {
+  cdNumber: String
+  tracks: [Product]
+}
+
+type Comment {
+  author: User
+  id: Int!
+  content: String!
+  dateCreation: String
+  deleted: Boolean
+}
+
+enum CommentableResource {
+  REVIEW
+  USERLIST
+}
+
+enum CommentPrivacy {
+  EVERYONE
+  SCOUTS
+  NOBODY
+}
+
+enum CommentsSorts {
+  DATE_ASC
+  DATE_DESC
+}
+
+type CompareRatings {
+  target: User!
+  versus: [VersusRatings]
+}
+
+type Contact {
+  id: Int!
+  liked: Boolean
+  name: String
+  picture: String
+  productCount: Int
+  likesCount: Int
+  url: String
+  products(limit: Int, offset: Int, universe: String): [Product]
+}
+
+type ContactListItem {
+  contact: Contact!
+  annotation: String
+}
+
+type Episode {
+  id: Int
+  number: Int
+  season: Season
+}
+
+type Habillage {
+  id: Int!
+  background: String
+  campaignId: Int!
+  capping: Int!
+  image: String
+  label: String
+  link: String
+  linkDesktop: String
+  linkTablet: String
+  linkMobile: String
+  mediaFolder: String
+  nbHourCapping: Int!
+  pixel: String
+  pixelDesktop: String
+  pixelTablet: String
+  pixelMobile: String
+  productId: Int
+  productUrl: String
+  showDesktop: Boolean
+  showMobile: Boolean
+  showTablet: Boolean
+  video: HabillageVideo
+  wish: HabillageWish
+}
+
+"""All types used for habillage"""
+type HabillageVideo {
+  autoplay: Boolean
+  height: Int
+  id: ID!
+  left: Int
+  top: Int
+  url: String
+  width: Int
+}
+
+type HabillageWish {
+  background: String
+  left: Int
+  shadow: String
+  top: Int
+}
+
+type HasPollAnswerProductResult {
+  pollId: Int!
+  pollAnswerId: Int
+  hasProduct: Boolean!
+}
+
+type HasProductResult {
+  listId: Int
+  hasProduct: Boolean!
+}
+
+type HomeFutureProductsAndPolls {
+  futureProducts: [Product]
+  polls: [Poll]
+}
+
+type HomeShowcasedProducts {
+  pollYear: Poll
+  starProduct: Product
+  showcasedProducts: [Product]
+  showcasedProducts2: [Product]
+}
+
+"""Is it used ?"""
+type Item {
+  annotation: String
+  contact: Contact
+  product: Product
+}
+
+type Label {
+  carac: String
+  contact: Contact
+  count: Int
+  display: String
+  id: Int!
+  instance_label: String
+  kind: String
+  percentage: Int
+  rank: Int
+  text: String
+}
+
+type ListItem {
+  product: Product!
+  annotation: String
+}
+
+enum ListProductsSort {
+  DATE_ADDED_ASC
+  DATE_ADDED_DESC
+  RATING_ASC
+  RATING_DESC
+}
+
+type Me {
+  id: Int!
+  email: String!
+  medias(avatarSize: String, backdropSize: String): UserMedias
+  name: String!
+  popcornsParameters: PopcornsParameters!
+  url: String!
+}
+
+type Media {
+  url: String
+  type: String
+}
+
+type Mutation {
+  addIssue(userIdTarget: Int!, contentType: String!, contentBody: String, contentId: Int, reportType: String!): String!
+  adminPopcornsIgnoreProductMatching(ignore: Int!, providerId: Int!, providerProductId: String!): AdminPopcornsProduct!
+  adminPopcornsMatchProduct(scProductId: Int, providerProductId: String!, providerId: Int!): AdminPopcornsMatchProductResponse!
+  adminPopcornsUpdateProductState(state: Int!, providerProductId: String!, providerId: Int!): Boolean!
+  cannesCache(key: String!): Boolean
+  cannesCreateVideo(ytId: String!): CannesVideo!
+  cannesDeleteVideo(id: Int!): CannesVideo!
+  cannesUpdateVideo(id: Int!, ytId: String!): CannesVideo!
+  changeItemPosition(listId: Int!, newItemPosition: Int!, itemId: Int!): Boolean
+  changeProfilePicture(newProfilePicture: Upload): UserMedias!
+  commentAdd(content: String!, resourceId: Int!, resourceType: CommentableResource!): Comment!
+  commentDelete(id: Int!, resourceType: CommentableResource!): Comment!
+  contactLike(id: Int!): Contact!
+  contactUnlike(id: Int!): Contact!
+
+  """Not used for now"""
+  feedLike(feedId: Int!): Boolean!
+  feedUnlike(feedId: Int!): Boolean!
+
+  """Used to log event habillage (impression/click/wish...)"""
+  habillageLogEvent(campaignId: Int!, event: String!, habillageId: Int!, objectId: Int, section: String, universe: String, view: String): Boolean!
+  pollAnswerAddProduct(pollAnswerId: Int!, productId: Int!, position: Int): Boolean!
+
+  """If productId is passed, add it to the newly created poll answer"""
+  pollAnswerCreate(parentId: Int!, productId: Int): PollAnswer
+  pollAnswerDeleteItem(pollId: Int!, itemId: Int!): Boolean!
+  pollAnswerDeleteProduct(pollId: Int!, productId: Int!): Boolean!
+  pollAnswerEdit(pollAnswerId: Int!, description: String, commentPrivacy: CommentPrivacy): PollAnswer
+  pollAnswerEditAnnotation(pollAnswerId: Int!, productId: Int!, annotation: String): Boolean!
+  popupSupportImageUpload(images: Upload): Picture
+  productRate(productId: Int!, rating: Int!): Boolean!
+  productReject(productId: Int!): Boolean!
+  productUnrate(productId: Int!): Boolean!
+  productUnreject(productId: Int!): Boolean!
+  productUnwish(productId: Int!): Boolean!
+  productWish(productId: Int!): Boolean!
+  reviewCreateOrEdit(markdown: String!, productId: Int!, title: String): Review!
+  reviewCommentPrivacyEdit(commentPrivacy: CommentPrivacy!, id: Int!): Boolean!
+  reviewDelete(id: Int!): Review!
+  reviewDislike(reviewId: Int!): Review!
+  reviewLike(reviewId: Int!): Review!
+  reviewUnlike(reviewId: Int!): Review!
+  setDateDone(productId: Int!, date: String!): Boolean!
+  setDoneUntil(productId: Int!): Episode!
+  setProductToNotInterested(productId: Int!): Boolean!
+  top10AddProduct(top10Id: Int!, productId: Int!, position: Int): Boolean!
+
+  """If productId is passed, add it to the newly created top10"""
+  top10Create(universe: String!, productId: Int): Top10!
+  top10Dislike(top10Id: Int!): Top10!
+  top10Edit(top10Id: Int!, description: String, commentPrivacy: CommentPrivacy): Top10
+  top10EditAnnotation(top10Id: Int!, productId: Int!, annotation: String): Boolean!
+  top10Like(top10Id: Int!): Top10!
+  unsetTvShowProgression(productId: Int!): Boolean
+  updatePopcornsParameters(showDone: Int!, showWish: Int!, movieWanted: Int!, tvshowWanted: Int!, notificationWanted: Int!, providers: [Int!]): Boolean!
+  userListUnlike(listId: Int!): UserList!
+
+  """Return only current User id"""
+  userBlock(userToBlockId: Int!): User!
+
+  """Return only current User id"""
+  userFollow(id: Int!): User!
+
+  """Return id of the unfollowed user."""
+  userUnfollow(id: Int!): User!
+
+  """Only item id is returned"""
+  userListAddItem(listId: Int!, itemId: Int!, position: Int, annotation: String): Item
+
+  """Only product id is returned, keep for Native."""
+  userListAddProduct(listId: Int!, productId: Int!, position: Int): Product
+  userListChangeListCover(listId: Int!, newListCover: Upload!): UserList
+
+  """If productId is passed, add it to the newly created userList"""
+  userListCreate(title: String!, universe: String!, productId: Int): UserList
+  userListDeleteItem(listId: Int!, itemId: Int!): Boolean!
+  userListDeleteItems(listId: Int!, itemsIds: [Int!]): Boolean!
+  userListDeleteProduct(listId: Int!, productId: Int!): Boolean!
+  userListDislike(listId: Int!): UserList!
+  userListEdit(listId: Int!, description: String, title: String, commentPrivacy: CommentPrivacy, isPublic: Boolean, isOrdered: Boolean): UserList
+  userListEditAnnotation(listId: Int!, productId: Int!, annotation: String): Boolean!
+  userListLike(listId: Int!): UserList!
+  userProfilePicUpdate(mediaId: Int!): UserMedias!
+  userSettingsSet(targetUser: Int!, about: String, displayedName: String, privacyName: Boolean, firstName: String, lastName: String, email: String, gender: String, username: String): UserSettings!
+
+  """Only returns current user Id"""
+  userUnblock(blockedUserId: Int!): User!
+  updateEmail(email: String!): User!
+  verifyEmail: User!
+  warnerCreateArticle(dateEnd: String, dateStart: String, description: String, image: Upload, link: String, scId: Int!, state: Int, title: String!, userIdTest: Int, ytId: String): Int!
+  warnerUpdateArticle(articleId: Int!, dateEnd: String, dateStart: String, description: String, image: Upload, link: String, scId: Int!, state: Int, title: String!, userIdTest: Int, ytId: String): Int!
+  warnerCache(key: String!): Boolean
+
+  """Newsletter"""
+  adminCreateNewsletter(content: String, products: [NewsletterProductsInput], title: String): Boolean!
+  editNewsletter(content: String, newsletterId: Int!, products: [NewsletterProductsInput], title: String): Boolean!
+}
+
+type Newsletter {
+  content: String
+  dateCreation: String
+  dateLastUpdate: String
+  id: Int
+  products: [NewsletterProducts]
+  title: String
+}
+
+type NewsletterProducts {
+  categoryId: Int
+  description: String
+  id: Int
+  scProductId: Int
+  vodProviders: [Int]
+}
+
+input NewsletterProductsInput {
+  categoryId: Int
+  description: String
+  id: Int
+  scProductId: Int
+  vodProviders: [Int]
+}
+
+type Params {
+  movieWanted: Int!
+  notificationWanted: Int!
+  showDone: Int!
+  showWish: Int!
+  tvshowWanted: Int!
+}
+
+type PeopleTeam {
+  avatar: String
+  description: String
+  firstname: String
+  job: String
+  lastname: String
+  scId: Int!
+}
+
+type Photos {
+  backdrops: [Media]
+  posters: [Media]
+  screenshots: [Media]
+}
+
+type Picture {
+  id: Int!
+  url: String!
+}
+
+type Poll {
+  badge: Badge
+  cover(format: String): String
+  description: String
+  id: Int!
+  label: String!
+  participationCount: Int!
+  products(limit: Int, offset: Int): [Product]
+  rebounds: [Poll]
+  scoutsAnswers: [PollAnswer]
+  universe: String
+  url: String!
+  userAnswer: PollAnswer
+}
+
+type PollAnswer {
+  id: Int!
+  author: User!
+  commentCount: Int!
+  commentPrivacy: CommentPrivacy
+  cover: String
+  dateLastEdit: String!
+  description: String
+  products(limit: Int, offset: Int): [ListItem]
+  isDisliked: Boolean
+  isLiked: Boolean
+  label: String!
+  likeNegativeCount: Int!
+  likePositiveCount: Int!
+  limitation: Int
+  parent: Poll
+  productCount: Int!
+  universe: String
+  url: String
+}
+
+type PopcornsParameters {
+  params: Params
+  providers: [Int!]
+}
+
+type PopcornsProvider {
+  name: String!
+  providerId: Int!
+}
+
+type Product {
+  isRejected: Boolean
+  allPhotos: Photos
+  artists: [Contact]
+  cannes: CannesInfos
+  casting(limit: Int): [CastingPerson]
+  duration: String
+  genres(limit: Int): [String]
+  id: Int!
+  labels: [Label]
+  lastEpisodeDone: Episode
+  medias(pictureSize: String, backdropSize: String): ProductMedia
+  original_title: String
+  rating: Float
+  release_date: String
+  subtitle: String
+  synopsis: String
+  title: String
+  universe: String
+  url: String
+  year_of_production: Int
+
+  """Music"""
+  albums: [Product]
+  albumCount: Int
+  tracklistExtract: [Product]
+  tracklistFull: [CD]
+
+  """Polls"""
+  polls(limit: Int): [Poll]
+
+  """Reviews"""
+  hasReviewsVersus: Boolean
+  review(userId: Int!): Review
+  reviews(limit: Int!, offset: Int!, sortBy: ReviewsSorts): Reviews
+  top_reviews: TopReviews
+
+  """User ratings"""
+  scouts_average: ScoutsAverage
+  scoutsRatings(limit: Int, offset: Int): [UserRating]
+  scoutsWishes(limit: Int, offset: Int): ScoutsWishes
+  userRating(userId: Int): Int
+  usersByRating(rating: Int): [User]
+
+  """Similar products"""
+  similar_products: [Product]
+  similar_products_by_year: SimilarProductsByYear
+
+  """Stats"""
+  stats: ProductStats
+
+  """Stats Details"""
+  statsDetails: ProductStatsDetails
+
+  """TV"""
+  channel: String
+  episodes: [Product]
+  numberOfSeasons: String
+  numberOfEpisodes: Int
+  parentTvShow: Product
+  productionStatus: String
+  seasons: [Product]
+  seasonNumber: String
+
+  """Current User info"""
+  date_done: String
+  myRating: Int
+  myWish: Boolean
+  targetRating: Int
+  targetWish: Boolean
+  userInfos: UserInfos
+
+  """Providers"""
+  providers: [ProductProvider]
+}
+
+type ProductList {
+  count: Int!
+  universe: String!
+  products_list: [Product]
+}
+
+type ProductMedia {
+  backdrop(format: String): String
+  picture(format: String): String
+  video: Video
+}
+
+type ProductProvider {
+  appUrl: ProductProviderAppUrl
+  name: String
+  providerAppId: String
+  providerId: Int!
+  providerProductId: String
+  webUrl: String
+}
+
+type ProductProviderAppUrl {
+  android: String!
+  ios: String!
+}
+
+type ProductStats {
+  wish_count: Int
+  rating_count: Int
+  review_count: Int
+}
+
+type ProductStatsDetails {
+  split: ProductStatsSplit
+}
+
+type ProductStatsSplit {
+  rating0: Int
+  rating1: Int
+  rating2: Int
+  rating3: Int
+  rating4: Int
+  rating5: Int
+  rating6: Int
+  rating7: Int
+  rating8: Int
+  rating9: Int
+}
+
+type Query {
+  adminPopcornsCount: AdminPopcornsCount!
+  adminPopcornsConflict: [AdminPopcornsConflictProduct]
+  adminPopcornsMatching: [AdminPopcornsProduct]
+  cannesProducts: [Product!]
+  cannesVideos(ids: [Int], type: CannesVideoType, year: Int): [CannesVideo]
+
+  """Return comment"""
+  comment(id: Int!): Comment!
+
+  """Return contact"""
+  contact(id: Int!): Contact!
+
+  """Return compare Ratings"""
+  compareRatings(target_id: Int!): CompareRatings!
+
+  """return curated polls"""
+  curatedPolls(universe: String!): [Poll]
+
+  """return habillage"""
+  habillage(universe: String, isHome: Boolean!): Habillage
+
+  """return home future products and polls data"""
+  homeFutureProductsAndPolls(universe: String!): HomeFutureProductsAndPolls!
+
+  """Return home showcased products data"""
+  homeShowcasedProducts(universe: String!): HomeShowcasedProducts!
+
+  """Return search suggestions products data"""
+  homeSearchSuggestions: [Product!]
+
+  """Return hot canape selection"""
+  hotCanape(subtypesIds: [Int], providersIds: [Int]): [Product]
+
+  """Return hot cinema selection"""
+  hotCinema(subtypesIds: [Int], providersIds: [Int]): [Product]
+
+  """Return my wishes selection"""
+  myWishes: [Product]
+
+  """Return culte selection"""
+  culte(subtypesIds: [Int], providersIds: [Int]): [Product]
+
+  """Return pepite selection"""
+  pepite(subtypesIds: [Int], providersIds: [Int]): [Product]
+
+  """Return current user info"""
+  me: Me
+
+  """Return poll answer"""
+  pollAnswer(id: Int!): PollAnswer!
+  pollAnswerContainsProduct(pollIds: String, productId: Int!): [HasPollAnswerProductResult]
+
+  """Return poll results based on id"""
+  poll(id: Int!): Poll!
+
+  """Return product info based on id"""
+  product(id: Int!): Product!
+
+  """Return list of product by month"""
+  productsByMonth(universe: String!, year: Int!, month: Int!, limit: Int, offset: Int): [Product]
+
+  """Return list of product by week (arguments are starting day)"""
+  productsByWeek(universe: String!, year: Int!, month: Int!, day: Int!, limit: Int, offset: Int): [Product]
+
+  """Return a review based on id"""
+  review(id: Int!): Review!
+  scTeam(status: Int!): [PeopleTeam]
+
+  """Return results of a contact search with ES"""
+  searchContact(keywords: String!, limit: Int, listId: Int, universe: String): SearchContact!
+
+  """Return results of a list search with ES"""
+  searchList(keywords: String!, universe: String, limit: Int, userId: Int): SearchList!
+
+  """Return results of a product search with ES"""
+  searchResult(keywords: String!, universe: String, limit: Int, mergeUniverse: Boolean, listId: Int): SearchResult!
+
+  """Return results of a user search with ES"""
+  searchUser(keywords: String!, limit: Int): SearchUser!
+
+  """Return an array of suggested products"""
+  suggestedProducts(universe: String!): [Product]
+
+  """Return an array of polls"""
+  topPolls: [Poll]
+  user(id: Int!): User!
+  userList(id: Int!): UserList
+  userListContainsProduct(listIds: String!, productId: Int!): [HasProductResult]
+  videoCampaign: VideoCampaign
+
+  """Newsletters"""
+  adminNewsletters: [Newsletter]
+  adminNewsletter(newsletterId: Int!): Newsletter
+
+  """PopCorns TMP"""
+  popcornsProductsList(id: Int!): UserList
+  popcornsProviders: [PopcornsProvider]
+
+  """Warner Op Spe"""
+  warnerAllArticles: [WarnerArticle]
+  warnerArticle(articleId: Int!): WarnerArticle
+  warnerCultMovies: [WarnerCultMovies]
+  warnerGenres: [WarnerGenre]
+  warnerGuide(step: String, options: WarnerGuideOptions): WarnerGuide
+  warnerNewReleases: WarnerNewReleases
+  warnerSaga(id: Int!, limitProducts: Int): WarnerSaga
+  warnerSagas(limitProducts: Int): [WarnerSaga]
+  warnerSearch(genreId: Int, input: String, lengthEnd: Int, lengthStart: Int, limit: Int, offset: Int, removeDone: Boolean, showWish: Boolean, sortBy: WarnerSortsTypes, yearEnd: Int, yearStart: Int): WarnerSearch
+  warnerReview: [Review]
+  warnerWishlist: WarnerWishlist
+  warnerNewsArticle: WarnerArticle
+}
+
+type Review {
+  author: User!
+  body: String
+  bodyText: String
+  commentCount: Int!
+  commentPrivacy: CommentPrivacy
+  comments(limit: Int, offset: Int, sortBy: CommentsSorts): [Comment]
+  dateCreation: String!
+  hits: Int!
+  id: Int!
+  isDisliked: Boolean!
+  isLiked: Boolean!
+  likeCount: Int!
+  likeNegativeCount: Int!
+  likePositiveCount: Int!
+  likers: [User]
+  product: Product!
+  rating: Int!
+  title: String
+  url: String
+  deleted: Boolean
+}
+
+type Reviews {
+  limit: Int!
+  offset: Int!
+  hasNext: Boolean
+  items: [Review]
+}
+
+enum ReviewsSorts {
+  DATE_ASC
+  DATE_DESC
+  LIKE_POSITIVE_COUNT
+}
+
+type ScoutsAverage {
+  average: Float
+  count: Int!
+}
+
+type ScoutsWishes {
+  limit: Int!
+  offset: Int!
+  hasNext: Boolean!
+  scouts: [User]
+}
+
+type SearchContact {
+  results: [Contact]
+  total_count: Int!
+}
+
+type SearchList {
+  polls: [Poll]
+  pollAnswers: [PollAnswer]
+  top10s: [Top10]
+  userLists: [UserList]
+  totalCount: Int!
+}
+
+type SearchResult {
+  results: [ProductList]
+  total_count: Int!
+}
+
+type SearchUser {
+  results: [User]
+  totalCount: Int!
+}
+
+type Season {
+  id: Int
+  number: Int
+}
+
+type SimilarProductsByYear {
+  type: SimilarProductsByYearType
+  items: [Product]
+}
+
+enum SimilarProductsByYearType {
+  bestByYear
+  current
+  future
+}
+
+type Top10 {
+  id: Int!
+  author: User!
+  commentCount: Int!
+  cover: String
+  dateLastEdit: String!
+  description: String
+  items(limit: Int, offset: Int): [ListItem]
+  likeNegativeCount: Int!
+  likePositiveCount: Int!
+  productCount: Int!
+  universe: String
+  url: String
+}
+
+type TopReviews {
+  negative: Review
+  positive: Review
+}
+
+type UniverseCount {
+  universe: String!
+  count: Int!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+type User {
+  description: String
+  email: String!
+  following: Boolean!
+  followers(limit: Int, offset: Int): [User]
+  scouts(limit: Int, offset: Int): [User]
+  id: Int!
+  isBlocked: Boolean!
+  name: String!
+  usertag: String!
+  medias(avatarSize: String, backdropSize: String): UserMedias
+  reviews(order: String, limit: Int, offset: Int): UserReviews
+  lists(universe: String, limit: Int, offset: Int): [UserList]
+  pollAnswers(universe: String, limit: Int, offset: Int): [PollAnswer]
+  ratings(universe: String, sortBy: String, limit: Int, offset: Int): [Product]
+  rating_counts: [UniverseCount]
+  settings: UserSettings
+  stats: UserStats
+  url: String!
+  wishes(universe: String, sort_by: String, sortBy: String, limit: Int, offset: Int): [Product]
+  wish_counts: [UniverseCount]
+}
+
+type UserInfos {
+  isWished: Boolean
+  isDone: Boolean
+  isListed: Boolean
+  isReviewed: Boolean
+}
+
+type UserList {
+  id: Int!
+  author: User
+  commentCount: Int
+  commentPrivacy: CommentPrivacy
+  comments(limit: Int, offset: Int, sortBy: CommentsSorts): [Comment]
+  cover(backdropSize: String): String
+  dateLastEdit: String
+  description: String
+  isDisliked: Boolean
+  isOfficial: Boolean
+  isOrdered: Boolean
+  isPrivate: Boolean
+  isLiked: Boolean
+  subtype: String
+  slug: String
+  products(limit: Int, offset: Int, sortBy: ListProductsSort): [ListItem]
+  contacts(limit: Int, offset: Int, sortBy: ListProductsSort): [ContactListItem]
+  label: String
+  likeNegativeCount: Int
+  likePositiveCount: Int
+  likers: [User]
+  productCount: Int
+  universe: String
+  url: String
+}
+
+type UserMedias {
+  avatar: String
+  backdrop: String
+}
+
+type UserRating {
+  user: User!
+  rating: Int!
+}
+
+type UserReviews {
+  has_next: Boolean
+  limit: Int
+  offset: Int
+  items: [Review]
+}
+
+type UserSettings {
+  username: String
+  displayedName: String
+  privacyName: Boolean
+  firstName: String
+  lastName: String
+  about: String
+  email: String
+  gender: String
+}
+
+type UserStats {
+  id: Int!
+  followerCount: Int!
+  reviewCount: Int!
+  ratingCount: Int!
+}
+
+type VersusRatings {
+  title: String!
+  count: Int!
+  products: [Product]
+}
+
+type Video {
+  id: String!
+  provider: String!
+}
+
+type VideoCampaign {
+  capping: Int!
+  clickableImage: String
+  color: String
+  description: String
+  id: Int!
+  iframeSource: String
+  imageNewCarousel: String
+  imageNewSticky: String
+  imageSticky: String
+  isClickableImage: Boolean
+  isList: Boolean!
+  isRedirectSticky: Boolean
+  isVast: Boolean!
+  nbHourCapping: Int!
+  pixels: String
+  pixelSticky: String
+  productLink: String
+  secondaryColor: String
+  subtitle: String
+  subtitleSticky: String
+  title: String!
+  url: String
+}
+
+type Warner {
+  genres: [WarnerGenre]
+}
+
+type WarnerArticle {
+  dateEnd: String
+  dateStart: String
+  description: String
+  id: Int!
+  imageUrl: String
+  link: String
+  scId: Int!
+  state: Int
+  title: String
+  userIdTest: Int
+  ytId: String
+}
+
+type WarnerCultMovies {
+  displayed_name: String
+  name: String
+  content: [WarnerProduct]
+}
+
+type WarnerGenre {
+  displayed_name: String
+  id: Int
+  name: String
+}
+
+type WarnerGuide {
+  filters: [String]
+  nextStep: String
+  randomProduct: WarnerProduct
+  products: [WarnerProduct]
+}
+
+input WarnerGuideOptions {
+  color: String
+  mindset: String
+  time: String
+  period: String
+}
+
+type WarnerNewReleases {
+  warnerProducts: [WarnerProduct]
+}
+
+type WarnerProduct {
+  product: Product!
+  version: String
+  youtube_movie_url_vf: String
+  youtube_movie_url_vo: String
+  youtube_preview_url_vf: String
+  youtube_preview_url_vo: String
+  youtube_trailer_url_vf: String
+  youtube_trailer_url_vo: String
+}
+
+type WarnerSaga {
+  backdrop: String
+  displayed_name: String
+  firstProduct: WarnerProduct
+  id: Int!
+  name: String!
+  products: [WarnerProduct]
+}
+
+type WarnerSearch {
+  productsCount: Int
+  products: [WarnerProduct]
+}
+
+enum WarnerSortsTypes {
+  DATE_DESC
+  POPULARITY
+  RATING
+}
+
+type WarnerWishlist {
+  warnerProducts: [WarnerProduct]
+  wishCount: Int
+}
+
