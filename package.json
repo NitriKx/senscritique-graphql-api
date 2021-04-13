@@ -4,14 +4,20 @@
   "description": "GraphQL client to interact with SensCritique API",
   "author": "NitriKx",
   "license": "MIT LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NitriKx/senscritique-graphql-api.git"
+  },
   "scripts": {
     "fetch-schema": "get-graphql-schema https://gql.senscritique.com/graphql > graphql-schema.json",
     "build": "tsc",
+    "postversion" : "git push && git push --tags",
+    "prepublishOnly": "npm run build",
     "watch": "tsc -w"
   },
-  "main": "index.ts",
-  "types": "index.d.ts",
-  "files": ["dist/**/*"],
+  "main": "lib/index.ts",
+  "types": "lib/index.d.ts",
+  "files": ["lib/**/*"],
   "devDependencies": {
     "@types/node": "^14.14.37",
     "get-graphql-schema": "^2.1.2",

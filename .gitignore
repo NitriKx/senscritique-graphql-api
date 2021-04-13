@@ -428,4 +428,4 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,node,python,webstorm+all,vscode
 
 
-build
+lib/
