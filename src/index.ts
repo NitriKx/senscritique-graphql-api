@@ -1,2 +1,2 @@
-export * from './SensCritiqueApp';
-export * from './SensCritiqueGqlClient';
+export * from './client/SensCritiqueApp';
+export * from './client/SensCritiqueGqlClient';
