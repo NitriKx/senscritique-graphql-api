@@ -47,6 +47,8 @@ export class SensCritiqueGqlClient extends GraphQLClient {
         if (this.idToken) {
             // Check if the token is expired
             const expiration = UnsecuredJWT.decode(this.idToken).payload.exp;
+            console.log(`Expiration = ${expiration}`)
+            console.log(`Payload = ${UnsecuredJWT.decode(this.idToken).payload}`)
             if (expiration) {
                 const now = new Date();
                 const utc_timestamp = Date.UTC(now.getFullYear(),now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
@@ -63,7 +65,10 @@ export class SensCritiqueGqlClient extends GraphQLClient {
         // If the token has never been created or is expired, we request a new one
         if (this.userCredentials.user) {
             console.log('Fetching new ID Token...')
-            return this.userCredentials.user?.getIdToken()
+            return this.userCredentials.user?.getIdToken().then((idToken) => {
+               this.idToken = idToken;
+               return idToken;
+            });
         } else {
             throw new Error("User is undefined")
         }
