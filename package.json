@@ -1,6 +1,6 @@
 {
   "name": "senscritique-graphql-api",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "GraphQL client to interact with SensCritique API",
   "author": "NitriKx",
   "license": "MIT LICENSE",

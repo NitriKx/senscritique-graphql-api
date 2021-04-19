@@ -1,10 +1,10 @@
 import { GraphQLClient } from "graphql-request";
 import firebase from "firebase";
 import { SensCritiqueApp } from "./SensCritiqueApp";
-import { UnsecuredJWT } from 'jose/jwt/unsecured'
 import {GraphQLError, RequestDocument, Variables} from "graphql-request/dist/types";
 import {Headers, RequestInit} from "graphql-request/dist/types.dom";
-
+import { decode } from "jose/util/base64url";
+import {TextDecoder} from "util";
 
 export class SensCritiqueGqlClient extends GraphQLClient {
     private idToken: string | null = null;
@@ -43,28 +43,24 @@ export class SensCritiqueGqlClient extends GraphQLClient {
      *
      * @private
      */
-    private getIdToken(): Promise<string> {
+    public getIdToken(): Promise<string> {
         if (this.idToken) {
             // Check if the token is expired
-            const expiration = UnsecuredJWT.decode(this.idToken).payload.exp;
-            console.log(`Expiration = ${expiration}`)
-            console.log(`Payload = ${UnsecuredJWT.decode(this.idToken).payload}`)
-            if (expiration) {
+            const claims = JSON.parse(new TextDecoder().decode(decode(this.idToken.split('.')[1])));
+            const expirationMillis = claims.exp * 1000;
+            if (expirationMillis) {
                 const now = new Date();
-                const utc_timestamp = Date.UTC(now.getFullYear(),now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+                const utc_timestamp = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
                 // If the token is not expired we return it as is
-                if (expiration > utc_timestamp) {
+                if (expirationMillis > utc_timestamp) {
                     const token = this.idToken;
                     return new Promise(resolve => resolve(token));
-                } else {
-                    console.log('Cached ID Token is expired')
                 }
             }
         }
 
         // If the token has never been created or is expired, we request a new one
         if (this.userCredentials.user) {
-            console.log('Fetching new ID Token...')
             return this.userCredentials.user?.getIdToken().then((idToken) => {
                this.idToken = idToken;
                return idToken;
